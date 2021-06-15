@@ -34,6 +34,9 @@ class App extends React.Component {
     render(){
         return (
             <div className="ui container">
+                <div class="ui horizontal divider">
+                    User Table
+                </div>
                 <UserTable deleteUserFromList={this.deleteUserFromList} users={this.state.users} />
                 <AddUser addUserToList={this.addUserToList}></AddUser>
             </div>

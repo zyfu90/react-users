@@ -1,5 +1,4 @@
 import React from 'react';
-import './UserTable.css';
 import documentClient from '../api/dynamodb';
 
 class UserTable extends React.Component {
@@ -31,26 +30,29 @@ class UserTable extends React.Component {
         const user = this.props.users.map(( {id, name, location}) => {
             return (
                 <tr key={id}>
-                    <td>{id}</td>
-                    <td>{name}</td>
-                    <td>{location}</td>
-                    <td><button onClick={ ()=> {this.deleteUser(id)}} className="ui negative basic button">Delete</button></td>
+                    <td data-label="Id" >{id}</td>
+                    <td data-label="Name">{name}</td>
+                    <td data-label="Location">{location}</td>
+                    <td data-label="Action">
+                        <button onClick={ ()=> {this.deleteUser(id)}} className="ui negative basic button">Delete</button>
+                    </td>
                 </tr>
             );
         });
     
         return (
-            <table>
-                <tbody>
+            <table class="ui celled table">
+                <thead>
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
                         <th>Location</th>
                         <th>Action</th>
                     </tr>
+                </thead>
+                <tbody>
                     {user}
                 </tbody>
-    
             </table>
     
         );

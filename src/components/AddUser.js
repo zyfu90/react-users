@@ -42,13 +42,14 @@ class AddUser extends React.Component {
         return (
             <div className="ui segment">
                 <form className="ui form" onSubmit={this.onFormSubmit}>
+                    <h4 class="ui dividing header">Add User</h4>
                     <div className="field">
                         <label>Name</label>
-                        <input type="text" value={this.state.name} onChange={ (event) => this.setState({name: event.target.value})}></input>
+                        <input className="input" value={this.state.name} onChange={ (event) => this.setState({name: event.target.value})}></input>
                     </div>
                     <div className="field">
                         <label>Location</label>
-                        <input type="text" value={this.state.location} onChange={ (event) => this.setState({location: event.target.value})}></input>
+                        <input className="input" value={this.state.location} onChange={ (event) => this.setState({location: event.target.value})}></input>
                     </div>
                     <button className="ui primary button" onClick={this.onClickSubmit}>Submit</button>
                     <button className="ui button" onClick={this.onClickClear}>Clear</button>
