@@ -13,17 +13,16 @@ class UserTable extends React.Component {
             }
         }
 
-        const deleteUser = this.props.deleteUserFromList;
-
         documentClient.delete(params, (err) => {
             if (err) {
                 alert("Unable to delete user. Error JSON:", JSON.stringify(err, null, 2));
+                return
             } else {
                 alert("Delete User succeeded");
-                deleteUser(id);
             }
         });
 
+        this.props.deleteUserFromList(id);
     }
 
     render(){

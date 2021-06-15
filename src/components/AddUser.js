@@ -31,10 +31,10 @@ class AddUser extends React.Component {
                     alert("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
                 } else {
                     alert("Success!");
-                    updateList(params.Item);
                 }
             });
-            
+            updateList(params.Item);
+            this.setState({name: '', location: ''});
         }
     }
 
