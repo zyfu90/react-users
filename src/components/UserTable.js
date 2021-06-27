@@ -1,46 +1,37 @@
 import React from 'react';
-import documentClient from '../api/dynamodb';
+import { connect } from 'react-redux';
+import { fetchUsers, deleteUser } from '../actions';
 
 class UserTable extends React.Component {
 
     state = { userId: '' };
 
-    deleteUser(id){
-        var params = {
-            TableName: 'Users',
-            Key: {
-                "id": id
-            }
-        }
-
-        documentClient.delete(params, (err) => {
-            if (err) {
-                alert("Unable to delete user. Error JSON:", JSON.stringify(err, null, 2));
-                return
-            } else {
-                alert("Delete User succeeded");
-            }
-        });
-
-        this.props.deleteUserFromList(id);
+    componentDidMount() {
+        this.props.fetchUsers();
     }
 
-    render(){
-        const user = this.props.users.map(( {id, name, location}) => {
+    renderUser(){
+        if (!this.props.users) {
+            return null;
+        }
+
+        return this.props.users.map((user) => {
             return (
-                <tr key={id}>
-                    <td data-label="Id" >{id}</td>
-                    <td data-label="Name">{name}</td>
-                    <td data-label="Location">{location}</td>
+                <tr key={user.id}>
+                    <td data-label="Id" >{user.id}</td>
+                    <td data-label="Name">{user.name}</td>
+                    <td data-label="Location">{user.location}</td>
                     <td data-label="Action">
-                        <button onClick={ ()=> {this.deleteUser(id)}} className="ui negative basic button">Delete</button>
+                        <button onClick={ ()=> this.props.deleteUser(user)} className="ui negative basic button">Delete</button>
                     </td>
                 </tr>
             );
         });
-    
+    }
+
+    render(){
         return (
-            <table class="ui celled table">
+            <table className="ui celled table">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -50,7 +41,7 @@ class UserTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {user}
+                    { this.renderUser() }
                 </tbody>
             </table>
     
@@ -59,4 +50,10 @@ class UserTable extends React.Component {
 
 }
 
-export default UserTable;
+const mapStateToProps = (state) => {
+    return {
+        users: state.users
+    }
+}
+
+export default connect(mapStateToProps, { fetchUsers, deleteUser })(UserTable);
