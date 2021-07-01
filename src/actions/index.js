@@ -13,19 +13,15 @@ export const fetchUsers = () => dispatch => {
 }
 
 
-export const addUser = (name, location) => dispatch => {
+export const addUser = (formValues) => dispatch => {
     var params = {
         TableName: TABLE_NAME,
-        Item:{
-            "name": name,
-            "location": location,
-            "id": require('crypto').randomBytes(10).toString('hex')
-        }
+        Item: formValues
     };
 
     documentClient.put(params, function(err, data) {
         if (err) {
-            console.log(err)
+            console.log(err.message)
         } else {
             dispatch({
                 type: 'ADD_USER',

@@ -1,44 +1,63 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addUser } from '../actions';
+import {Field, reduxForm} from 'redux-form';
+import {connect} from 'react-redux';
+import {addUser} from '../actions';
 class AddUser extends React.Component {
+  renderInput = ({input, label, meta}) => {
+    return (
+      <div className="field">
+        <label>{label}</label>
+        <input {...input} autoComplete="off" />
+        <div>{this.renderError(meta)}</div>
+      </div>
+    );
+  };
 
-    state = {name: '', location: ''};
-
-    onClickSubmit = () => {
-        if ( this.state.name !== '' && this.state.location !== '') {
-            this.props.addUser(this.state.name, this.state.location);
-            this.setState({name: '', location: ''});
-        } else {
-            alert('Name or Location is empty.');
-        }
+  renderError({error, touched}) {
+    if (error && touched) {
+      return (
+        <div className="ui error message">
+          <div className="header">{error}</div>
+        </div>
+      );
     }
+  }
 
-    render(){
-        return (
-            <div className="ui segment">
-                <form className="ui form" onSubmit={ (event) => event.preventDefault() }>
-                    <h4 className="ui dividing header">Add User</h4>
-                    <div className="field">
-                        <label>Name</label>
-                        <input className="input" value={this.state.name} onChange={ (event) => this.setState({name: event.target.value})}></input>
-                    </div>
-                    <div className="field">
-                        <label>Location</label>
-                        <input className="input" value={this.state.location} onChange={ (event) => this.setState({location: event.target.value})}></input>
-                    </div>
-                    <button className="ui primary button" onClick={this.onClickSubmit}>Submit</button>
-                    <button className="ui button" onClick={ () => this.setState({name: '', location: ''}) }>Clear</button>
-                </form>
-            </div>
-        );
-    }
+  onSubmit = (formValues) => {
+    const userId = require('crypto').randomBytes(10).toString('hex');
+    this.props.addUser({...formValues, id: userId});
+  };
+
+  render() {
+    return (
+      <div className="ui segment">
+        <form
+          onSubmit={this.props.handleSubmit(this.onSubmit)}
+          className="ui form error"
+        >
+          <Field name="name" label="Name" component={this.renderInput} />
+          <Field
+            name="location"
+            label="Location"
+            component={this.renderInput}
+          />
+          <button className="ui button primary">Submit</button>
+        </form>
+      </div>
+    );
+  }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        users: state.users
-    }
-}
+const validate = (formValues) => {
+  const errors = {};
+  if (!formValues.name) errors.name = 'Name cannot be empty';
+  if (!formValues.location) errors.location = 'Location cannot be empty';
+  return errors;
+};
 
-export default connect(mapStateToProps, { addUser } )(AddUser);
+const formWrapped = reduxForm({
+  form: 'AddUser',
+  validate: validate,
+})(AddUser);
+
+export default connect(null, {addUser})(formWrapped);
